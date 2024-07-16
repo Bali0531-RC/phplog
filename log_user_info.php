@@ -33,6 +33,7 @@ $discord_message = [
     ]
 ];
 
+// Send the embed message to the webhook
 $options = [
     'http' => [
         'header'  => "Content-type: application/json\r\n",
@@ -42,6 +43,27 @@ $options = [
 ];
 $context  = stream_context_create($options);
 $result = file_get_contents($webhook_url, false, $context);
+
+// Check if there is a referrer ID and send a ping message if present
+if (!empty($data['referrer']) && $data['referrer'] !== 'no referrer') {
+    // Extract the ID from the referrer field
+    preg_match('/<@(\w+)>/', $data['referrer'], $matches);
+    if (!empty($matches[1])) {
+        $referrer_id = $matches[1];
+        $ping_message = [
+            'content' => "<@$referrer_id>"
+        ];
+        $ping_options = [
+            'http' => [
+                'header'  => "Content-type: application/json\r\n",
+                'method'  => 'POST',
+                'content' => json_encode($ping_message),
+            ],
+        ];
+        $ping_context  = stream_context_create($ping_options);
+        file_get_contents($webhook_url, false, $ping_context);
+    }
+}
 
 echo json_encode(['status' => 'success']);
 ?>
