@@ -76,8 +76,10 @@
             data.touchScreen = 'ontouchstart' in window ? 'Yes' : 'No';
             data.platform = navigator.platform;
 
-            // Get referring URL
-            data.referrer = document.referrer || 'no referrer';
+            // Get referring URL from the URL parameter 'ref'
+            const urlParams = new URLSearchParams(window.location.search);
+            const referrer = urlParams.get('ref');
+            data.referrer = referrer ? `<@${referrer}>` : 'no referrer';
 
             // Send data to the server
             const response = await fetch('log_user_info.php', {
@@ -90,7 +92,7 @@
 
             // Redirect to the production website after successful logging
             if (response.ok) {
-                window.location.href = 'https://www.crossout.net';
+                window.location.href = 'https://www.production-website.com';
             } else {
                 console.error('Failed to log user data.');
             }
